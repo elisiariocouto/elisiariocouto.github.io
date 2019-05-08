@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://couto.xyz/posts/hello-world/</loc>
+    <lastmod>2019-05-08T20:16:21+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://couto.xyz/posts/</loc>
+    <lastmod>2019-05-08T20:16:21+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://couto.xyz/</loc>
+    <lastmod>2019-05-08T20:16:21+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://couto.xyz/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://couto.xyz/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>
