@@ -28,7 +28,7 @@ jobs:
         run: npm ci
 
       - name: Build Eleventy site
-        run: npm run build
+        run: npm run build-ghpages
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
