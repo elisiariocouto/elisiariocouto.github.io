@@ -6,6 +6,27 @@ const eleventyNavigation = {
 
 const numberOfLatestPostsToShow = 3;
 ---
+
+{% renderTemplate "md" %}
+# Hello 👋
+
+My name is Elisiário, I'm an Engineer based in Porto, Portugal.
+
+These are some thoughts on tech, pitfalls, and the occasional rant.
+
+## What I do
+
+- 🛠 Building and maintaining infrastructure at scale
+- 🤖 Automating everything I can
+- 🌱 Self-hosting new stuff
+- 📝 Writing about my experiences here
+
+You can find me on [GitHub](https://github.com/elisiariocouto) or you can reach me at [security@couto.io](mailto:security@couto.io).
+
+🔐 PGP Key: [7BDE4E59](https://couto.io/gpg.txt)
+
+{% endrenderTemplate %}
+
 {% set postsCount = collections.posts | length %}
 {% set latestPostsCount = postsCount | min(numberOfLatestPostsToShow) %}
 <h1>Latest {{ latestPostsCount }} Post{% if latestPostsCount != 1 %}s{% endif %}</h1>

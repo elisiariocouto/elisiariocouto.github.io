@@ -1,0 +1,15 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Contact: mailto:security@couto.io
+Expires: 2026-12-31T12:00:00.000Z
+Encryption: https://couto.io/gpg.txt
+Preferred-Languages: en, pt-pt
+Canonical: https://couto.io/.well-known/security.txt
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQTtILXIBE4qMeM9WXvqC7U8e95OWQUCZ6lNHAAKCRDqC7U8e95O
+WerTAP0SDmhMMeH8gzox4fqFNrgV7QxKV/jrOj06DBM+QDpnvQD+PCaXkDRXawlU
+sxMjJDTwqwfLmOlj8yQHU9fi48oDMwk=
+=OfSC
+-----END PGP SIGNATURE-----
