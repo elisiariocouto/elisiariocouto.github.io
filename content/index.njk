@@ -1,31 +1,38 @@
 ---js
 const eleventyNavigation = {
-	key: "Home",
+	key: "🏠 Home",
 	order: 1
 };
 
 const numberOfLatestPostsToShow = 3;
 ---
 
-{% renderTemplate "md" %}
-# Hello 👋
 
-My name is Elisiário, I'm an Engineer based in Porto, Portugal.
 
-These are some thoughts on tech, pitfalls, and the occasional rant.
+<img src="https://0.gravatar.com/avatar/2fbc48a3b0df1368d641a254116ceb7e1c6c83a85cdc4965a947826de0bd04c3?size=512" alt="Profile Picture" class="profile-picture">
 
-## What I do
+<h1>Hello 👋</h1>
 
-- 🛠 Building and maintaining infrastructure at scale
-- 🤖 Automating everything I can
-- 🌱 Self-hosting new stuff
-- 📝 Writing about my experiences here
+<p>My name is Elisiário, I'm an Engineer based in Porto, Portugal.</p>
+<p>These are some thoughts on tech, pitfalls, and the occasional rant.</p>
 
-You can find me on [GitHub](https://github.com/elisiariocouto) or you can reach me at [security@couto.io](mailto:security@couto.io).
+<h2>What I'm currently doing</h2>
 
-🔐 PGP Key: [7BDE4E59](https://couto.io/gpg.txt)
+<ul>
+<li>🛠 Building and maintaining infrastructure at scale</li>
+<li>🤖 Automating everything I can</li>
+<li>🌱 Self-hosting new stuff</li>
+<li>📝 Writing about my experiences here</li>
+</ul>
 
-{% endrenderTemplate %}
+<p>
+You can find me on <a href="https://github.com/elisiariocouto">GitHub</a>,
+<a href="https://www.linkedin.com/in/elisiariocouto/">LinkedIn</a>
+or you can reach me at <a href="mailto:hello@couto.io">hello@couto.io</a>.
+</p>
+
+<p>🔐 PGP Key: <a href="https://couto.io/gpg.txt">7BDE4E59</a></p>
+
 
 {% set postsCount = collections.posts | length %}
 {% set latestPostsCount = postsCount | min(numberOfLatestPostsToShow) %}
@@ -39,12 +46,3 @@ You can find me on [GitHub](https://github.com/elisiariocouto) or you can reach 
 {% if morePosts > 0 %}
 <p>{{ morePosts }} more post{% if morePosts != 1 %}s{% endif %} can be found in <a href="blog.njk">the archive</a>.</p>
 {% endif %}
-
-{# List every content page in the project #}
-{#
-<ul>
-	{%- for entry in collections.all %}
-	<li><a href="{{ entry.url }}"><code>{{ entry.url }}</code></a></li>
-	{%- endfor %}
-</ul>
-#}

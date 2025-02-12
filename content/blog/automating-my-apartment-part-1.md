@@ -1,6 +1,6 @@
 ---
 title: 'Automating my apartment: Part 1'
-subtitle: I wanted to automate a light bulb. Ended up reading RFC 6762.
+description: I wanted to automate a light bulb. Ended up reading RFC 6762.
 date: 2023-05-01
 tags: ["homekit", "matter", "shelly", "homebridge", "automation"]
 ---

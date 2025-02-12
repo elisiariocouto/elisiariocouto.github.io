@@ -1,0 +1,14 @@
+---js
+const eleventyNavigation = {
+	key: "🧠 Cursed Knowledge",
+	order: 3
+};
+---
+<h1>Cursed Knowledge</h1>
+
+<p>These are some of the things I've learned that have weird behaviour, defy logic and can lead you to insanity.</p>
+
+<p>Inspired by the original concept from the <a href="https://immich.app/cursed-knowledge/">Immich team</a>. If you don't know the project, have a look at it!</p>
+
+{% set postslist = collections.cursed %}
+{% include "postslist.njk" %}

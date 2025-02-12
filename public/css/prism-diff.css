@@ -7,10 +7,12 @@ pre[class*="language-diff-"] {
 	padding-left: var(--eleventy-code-padding);
 	padding-right: var(--eleventy-code-padding);
 }
+
 .token.deleted {
 	background-color: hsl(0, 51%, 37%);
 	color: inherit;
 }
+
 .token.inserted {
 	background-color: hsl(126, 31%, 39%);
 	color: inherit;
@@ -28,10 +30,11 @@ pre[class*="language-diff-"] {
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
+
 .token.prefix.inserted,
 .token.prefix.deleted {
 	width: var(--eleventy-code-padding);
-	background-color: rgba(0,0,0,.2);
+	background-color: rgba(0, 0, 0, .2);
 }
 
 /* Optional: full-width background color */
@@ -40,6 +43,8 @@ pre[class*="language-diff-"] {
 	display: block;
 	margin-left: calc(-1 * var(--eleventy-code-padding));
 	margin-right: calc(-1 * var(--eleventy-code-padding));
-	text-decoration: none; /* override del, ins, mark defaults */
-	color: inherit; /* override del, ins, mark defaults */
+	text-decoration: none;
+	/* override del, ins, mark defaults */
+	color: inherit;
+	/* override del, ins, mark defaults */
 }
