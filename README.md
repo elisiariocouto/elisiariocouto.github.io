@@ -2,6 +2,11 @@
 
 Based on https://github.com/11ty/eleventy-base-blog.
 
+## TODO
+
+- Add Photos section
+- Add music collection
+
 ## Development
 
 1. Install dependencies
