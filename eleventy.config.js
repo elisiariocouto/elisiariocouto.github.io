@@ -12,15 +12,22 @@ import pluginFilters from "./_config/filters.js";
 export default async function (eleventyConfig) {
 
 	// Images with captions
-	eleventyConfig.addShortcode("image", function (src, caption) {
-		const id = `img-${Math.random().toString(36).substr(2, 9)}`;
-		return `<figure class="image-figure">
+	eleventyConfig.addShortcode("image", function (src, caption, width, layout) {
+		const id = `img-${Math.random().toString(36).slice(2, 11)}`;
+		const style = width ? `style="max-width: ${width}px; margin: 0 auto;"` : '';
+		const layoutClass = layout ? `image-layout-${layout}` : '';
+		return `<figure class="image-figure ${layoutClass}" ${style}>
 					<input type="checkbox" id="${id}" class="image-zoom-toggle">
 					<label for="${id}" class="image-zoom-label">
 					<img src="${src}" alt="${caption || ''}" loading="lazy">
 					</label>
 					${caption ? `<figcaption>${caption}</figcaption>` : ''}
 				</figure>`;
+	});
+
+	// Add a container shortcode for side-by-side images
+	eleventyConfig.addPairedShortcode("imagegrid", function (content) {
+		return `<div class="image-grid">${content}</div>`;
 	});
 
 	// Drafts, see also _data/eleventyDataSchema.js

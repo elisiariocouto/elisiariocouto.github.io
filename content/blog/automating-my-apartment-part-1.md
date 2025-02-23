@@ -5,7 +5,7 @@ date: 2023-05-01
 tags: ["homekit", "matter", "shelly", "homebridge", "automation"]
 ---
 
-![a living room with a couch and a television](https://images.unsplash.com/photo-1634045924031-98026a4557c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzMDAzMzh8MHwxfHNlYXJjaHwzMnx8dGVsZXZpc2lvbnxlbnwwfHx8fDE2ODI2MjI5MDg&ixlib=rb-4.0.3&q=80&w=1080)Not my apartment. Photo by [Влад Хмара](https://unsplash.com/@asus168) on [Unsplash](https://unsplash.com)
+{% image "https://images.unsplash.com/photo-1634045924031-98026a4557c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzMDAzMzh8MHwxfHNlYXJjaHwzMnx8dGVsZXZpc2lvbnxlbnwwfHx8fDE2ODI2MjI5MDg&ixlib=rb-4.0.3&q=80&w=1080", "Not my apartment. Photo by Влад Хмара on Unsplash" %}
 
 This is the first part of a series of posts on how I automated parts of my daily routine in my apartment. First steps into the Smart Home world, HomeKit, Thread, Matter, mDNS, and some rabbit holes. Subscribe to be notified of the rest of the story.
 
@@ -52,9 +52,12 @@ I bought two cheap Shelly 1, their entry-level device. After some DIY electricia
 
 I was very pleased with the build quality and reliability of the Shelly devices. At the time, if someone asked me for recommendations, Shelly would be a no-brainer.
 
-![](https://substackcdn.com/image/fetch/w_720,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F31955a05-b5f2-4bb3-825c-c4c58fd966d4_1179x2556.png)![](https://substackcdn.com/image/fetch/w_720,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8e5e52e2-28a9-4052-93de-e4af0eb97140_1179x2556.png)
+{% imagegrid %}
+{% image "https://substackcdn.com/image/fetch/w_720,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F31955a05-b5f2-4bb3-825c-c4c58fd966d4_1179x2556.png", "Shelly App", 300 %}
 
-Shelly app
+{% image "https://substackcdn.com/image/fetch/w_720,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8e5e52e2-28a9-4052-93de-e4af0eb97140_1179x2556.png", "Room Screen", 300 %}
+
+{% endimagegrid %}
 
 ### Connecting to HomeKit
 
@@ -77,13 +80,14 @@ Fortunately, I found [HomeBridge](https://homebridge.io), a project that adverti
 
 I reverted the Shelly firmware to the official one, picked up an old Intel NUC I had building up dust, installed HomeBridge and the [homebridge-shelly](https://github.com/alexryd/homebridge-shelly) plugin, and, you guessed it, _ta-da_ 🎉!
 
-![](https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff13bd637-d2bd-4832-b204-36c6f14f90d3_1490x780.png)I’m impatient.
+{% image "https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff13bd637-d2bd-4832-b204-36c6f14f90d3_1490x780.png", "I’m impatient." %}
 
 ### Automation and Scenes
 
 At this point, I set up the second Shelly on the floor shade next to the TV. When I turn on the main living room light, I also like to turn on the floor shade. With Apple Home’s _Automation_ feature, I could turn on/off both lights simultaneously:
 
-![](https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7fe29203-1972-4435-a2f4-655666a46ed2_1179x2556.png)Nice extra feature, this automation only triggers after the sun sets down
+
+{% image "https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7fe29203-1972-4435-a2f4-655666a46ed2_1179x2556.png", "Nice extra feature, this automation only triggers after the sun sets down", 300 %}
 
 Additionally, I created a _Scene_ in Apple Home that turns off the main living room light, the floor shade, and the TV (an LG which had HomeKit integration out of the box).
 

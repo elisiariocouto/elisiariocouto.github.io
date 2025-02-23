@@ -104,5 +104,7 @@ Using the [ESPHome integration](https://www.home-assistant.io/integrations/espho
 I can even add the Air Conditioners to Apple Home via the [HomeKit Bridge](https://www.home-assistant.io/integrations/homekit) integration, which is a very reliable
 integration that replaced my old Homebridge installation.
 
+{% imagegrid %}
 {% image "../../public/img/esphome-homekit.jpeg", "Device exposed to Apple Home, controlling modes and fan speed." %}
 {% image "../../public/img/esphome-homekit-climate.jpeg", "For some reason, the 'Dry' mode does not appear in the menu." %}
+{% endimagegrid %}
