@@ -329,3 +329,85 @@ header {
 	max-width: 180px;
 
 }
+
+.image-figure {
+	margin: 2rem 0;
+	position: relative;
+}
+
+.image-zoom-toggle {
+	display: none;
+}
+
+.image-zoom-label {
+	cursor: zoom-in;
+	display: block;
+}
+
+.image-figure img {
+	width: 100%;
+	height: auto;
+	border-radius: 4px;
+	transition: transform 0.3s ease;
+}
+
+.image-figure figcaption {
+	margin-top: 0.5rem;
+	text-align: center;
+	font-size: 0.9rem;
+	color: var(--text-color-secondary);
+	font-style: italic;
+}
+
+/* Zoom functionality */
+.image-zoom-toggle:checked+.image-zoom-label {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 999;
+	background: rgba(0, 0, 0, 0.9);
+	cursor: zoom-out;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+}
+
+.image-zoom-toggle:checked+.image-zoom-label img {
+	max-height: calc(95vh - 4rem);
+	/* Reduced to make room for caption */
+	max-width: 95vw;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	margin-bottom: 1rem;
+}
+
+.image-zoom-toggle:checked+.image-zoom-label+figcaption {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(0, 0, 0, 0.8);
+	color: #fff;
+	padding: 1rem;
+	text-align: center;
+	z-index: 1000;
+	margin: 0;
+	backdrop-filter: blur(5px);
+}
+
+/* Ensure zoomed images don't get cut off on mobile */
+@media (max-width: 768px) {
+	.image-zoom-toggle:checked+.image-zoom-label {
+		padding: 1rem;
+	}
+
+	.image-zoom-toggle:checked+.image-zoom-label+figcaption {
+		font-size: 0.8rem;
+		padding: 0.75rem;
+	}
+}

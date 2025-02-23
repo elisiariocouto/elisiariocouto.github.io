@@ -5,7 +5,7 @@ date: 2025-02-10
 tags: ["homekit", "homeassistant", "mitsubishi", "esphome", "automation"]
 ---
 
-![Home Assistant with Mitsubishi air conditioners without MELCloud](../../public/img/home-assistant-mitsubishi.png)
+{% image "../../public/img/home-assistant-mitsubishi.png", "Home Assistant with Mitsubishi air conditioners without MELCloud" %}
 
 I recently moved to a new apartment that has a Mitsubishi Electric HVAC system, commonly known as an air conditioner.
 
@@ -14,7 +14,7 @@ On each room that as an indoor unit, there are also PAR-40MAA wall controls.
 
 ## The "official" way
 
-![](../../public/img/mitsubishi-mac-588if-e.jpeg)
+{% image "../../public/img/mitsubishi-mac-588if-e.jpeg", "Mitsubishi MAC-568IF-E" %}
 
 On an initial search, I discovered that Mitsubishi sells a Wireless Adapter (MAC-568IF-E) that
 you can hook up to each indoor unit. The wireless adapter connects to a Wi-Fi network and, to
@@ -44,7 +44,7 @@ very reliable track history.
 According to [this GitHub discussion](https://github.com/echavet/MitsubishiCN105ESPHome/discussions/83), this guy successfully
 connected a [M5Stack Atom S3 Lite](https://shop.m5stack.com/products/atoms3-lite-esp32s3-dev-kit) to his heat pump board, so I ordered the same parts.
 
-![](../../public/img/m5stack-s3-lite.jpeg)
+{% image "../../public/img/m5stack-s3-lite.jpeg", "M5Stack AtomS3 Lite compared to a dollar coin" %}
 
 ## Parts
 
@@ -71,7 +71,7 @@ esphome upload ac-livingroom.yaml
 
 After that, I discovered the Atom in my Wi-Fi network, connected to its IP and was presented with ESPHome's web interface.
 
-![](../../public/img/esphome-web-interface.png)
+{% image "../../public/img/esphome-web-interface.png", "ESPHome Web Interface" %}
 
 Now that I know the device boots and connects to my Wi-Fi network, it's time to connect it to the air conditioner board.
 
@@ -80,20 +80,22 @@ First I needed to change one of the ends of the grove cable to the correct conne
 With a small pair of tweezers, I pulled the Grove connector tabs that make the crimped part stuck on the connector in order to
 remove the crimped cable from the connector. I did this to all the four wires and inserted them in the 5-pin connector as shown in the image.
 
-![](../../public/img/grove-connector.jpeg)
+{%
+    image
+    "../../public/img/grove-connector.jpeg",
+    "Some wires detached from connector"
+%}
 
 In the GitHub discussion there were instructions on the pinout of the CN105 connector and the JST female connector should be connected as you see in the image shared there. You can guide yourself using the small triangle in the connector. That pin should not have any wire connected.
 
-![](../../public/img/jst-connector.png)
+{% image "../../public/img/jst-connector.png", "CN105, small triangle points to pin 1: unused - pin 2: black (GND) - pin 3: red (5V) - pin 4: white (TX GPIO2) - pin 5: yellow (RX GPIO1)" %}
 
-Here is the end result, what a beauty!
-
-![](../../public/img/m5stack-cn105.jpeg)
+{% image "../../public/img/m5stack-cn105.jpeg", "Here is the end result, what a beauty!" %}
 
 Done with the connections, it was time to turn off the breaker for the air conditioners, access the air-con indoor unit, remove the metal plate covering the board and connecting
 the home-made device to the CN105 connector. The hardest part was discovering the actual connector in the board, but with the help of my mobile phone's flashlight I was able to locate it. **By the way, usually it's a red connector 🫡**
 
-![](../../public/img/esp32-mitsubishi.jpeg)
+{% image "../../public/img/esp32-mitsubishi.jpeg", "AtomS3 Lite hooked to one indoor unit board" %}
 
 ## Usage
 
@@ -102,5 +104,5 @@ Using the [ESPHome integration](https://www.home-assistant.io/integrations/espho
 I can even add the Air Conditioners to Apple Home via the [HomeKit Bridge](https://www.home-assistant.io/integrations/homekit) integration, which is a very reliable
 integration that replaced my old Homebridge installation.
 
-![](../../public/img/esphome-homekit.jpeg)
-![](../../public/img/esphome-homekit-climate.jpeg)
+{% image "../../public/img/esphome-homekit.jpeg", "Device exposed to Apple Home, controlling modes and fan speed." %}
+{% image "../../public/img/esphome-homekit-climate.jpeg", "For some reason, the 'Dry' mode does not appear in the menu." %}

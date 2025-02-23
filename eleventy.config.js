@@ -10,6 +10,19 @@ import pluginFilters from "./_config/filters.js";
 
 /** @param {import("@11ty/eleventy").UserConfig} eleventyConfig */
 export default async function (eleventyConfig) {
+
+	// Images with captions
+	eleventyConfig.addShortcode("image", function (src, caption) {
+		const id = `img-${Math.random().toString(36).substr(2, 9)}`;
+		return `<figure class="image-figure">
+					<input type="checkbox" id="${id}" class="image-zoom-toggle">
+					<label for="${id}" class="image-zoom-label">
+					<img src="${src}" alt="${caption || ''}" loading="lazy">
+					</label>
+					${caption ? `<figcaption>${caption}</figcaption>` : ''}
+				</figure>`;
+	});
+
 	// Drafts, see also _data/eleventyDataSchema.js
 	eleventyConfig.addPreprocessor("drafts", "*", (data, content) => {
 		if (data.draft && process.env.ELEVENTY_RUN_MODE === "build") {
