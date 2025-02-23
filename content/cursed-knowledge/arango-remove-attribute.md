@@ -1,6 +1,6 @@
 ---
 title: "Arango Remove Attribute"
-description: "oaksdokasdokasodkaosdk"
+description: "When updating documents, ArangoDB only touches the attributes specified in the `WITH` clause."
 date: "2025-02-10"
 tags: ["cursed-knowledge", "arangodb"]
 ---

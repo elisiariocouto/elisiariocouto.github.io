@@ -13,6 +13,7 @@
 	--background-color: #fff;
 
 	--text-color: var(--color-gray-90);
+	--text-color-secondary: #666;
 	--text-color-link: #082840;
 	--text-color-link-active: #5f2b48;
 	--text-color-link-visited: #17050F;
@@ -27,6 +28,7 @@
 		--color-gray-90: #dad8d8;
 
 		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-secondary: #999;
 		--text-color-link: #1493fb;
 		--text-color-link-active: #6969f7;
 		--text-color-link-visited: #a6a6f8;
@@ -429,4 +431,20 @@ header {
 	.image-grid {
 		grid-template-columns: 1fr;
 	}
+}
+
+.post-description {
+	font-size: 1.2rem;
+	color: var(--text-color-secondary);
+	margin-top: -0.5rem;
+	margin-bottom: 2rem;
+	font-style: italic;
+}
+
+.postlist-description {
+	font-size: 0.9rem;
+	color: var(--text-color-secondary);
+	margin: 0.25rem 0;
+	width: 99%;
+	/* Force time to be on new line */
 }
