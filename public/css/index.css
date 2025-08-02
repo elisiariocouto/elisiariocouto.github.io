@@ -344,13 +344,38 @@ header {
 .image-zoom-label {
 	cursor: zoom-in;
 	display: block;
+	transition: all 0.2s ease;
+}
+
+.image-zoom-label:focus {
+	outline: 2px solid #1493fb;
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+/* Keyboard activation styling */
+.image-zoom-label:focus:active {
+	transform: scale(0.98);
+}
+
+.image-zoom-label:hover {
+	/* transform: scale(1.02); */
 }
 
 .image-figure img {
 	width: 100%;
-	height: auto;
-	border-radius: 4px;
-	transition: transform 0.3s ease;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 8px;
+}
+
+.image-grid .image-figure img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center center;
 }
 
 .image-figure figcaption {
@@ -372,21 +397,145 @@ header {
 	background: rgba(0, 0, 0, 0.9);
 	cursor: zoom-out;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	padding: 2rem;
 }
 
 .image-zoom-toggle:checked+.image-zoom-label img {
-	max-height: calc(95vh - 4rem);
-	/* Reduced to make room for caption */
-	max-width: 95vw;
+	max-height: 90vh;
+	max-width: calc(100vw - 320px); /* Leave space for sidebar */
 	width: auto;
 	height: auto;
 	object-fit: contain;
-	margin-bottom: 1rem;
+	margin-right: 2rem;
 }
+
+/* Hide metadata sidebar in normal view */
+.image-metadata {
+	display: none;
+}
+
+/* Show and style metadata sidebar in overlay */
+.image-zoom-toggle:checked+.image-zoom-label .image-metadata {
+	display: block;
+	position: fixed;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 300px;
+	background: rgba(20, 20, 20, 0.95);
+	color: #fff;
+	padding: 2rem;
+	overflow-y: auto;
+	backdrop-filter: blur(10px);
+}
+
+.image-metadata h3 {
+	margin: 0 0 1.5rem 0;
+	font-size: 1.2rem;
+	color: #fff;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	padding-bottom: 0.5rem;
+}
+
+.image-metadata .meta-item {
+	margin-bottom: 1.25rem;
+	display: flex;
+	gap: 0.75rem;
+	align-items: flex-start;
+}
+
+.image-metadata .meta-icon {
+	width: 16px !important;
+	height: 16px !important;
+	max-width: 16px;
+	max-height: 16px;
+	filter: invert(1) opacity(0.7);
+	flex-shrink: 0;
+	margin-top: 0.125rem;
+}
+
+.image-metadata .meta-content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.image-metadata .meta-content label {
+	font-size: 0.75rem;
+	color: rgba(255, 255, 255, 0.6);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-weight: 600;
+	margin: 0;
+}
+
+.image-metadata .meta-content span {
+	font-size: 0.875rem;
+	color: #fff;
+	word-break: break-word;
+	line-height: 1.4;
+}
+
+.image-metadata .meta-content .tech-details {
+	font-family: var(--font-family-monospace);
+	font-size: 0.8rem;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+/* Special styling for items without icons (like description) */
+.image-metadata .meta-item:not(:has(.meta-icon)) {
+	padding-left: 2rem;
+}
+
+.image-metadata .meta-item:not(:has(.meta-icon)) .meta-content {
+	margin-left: 0;
+}
+
+/* Close Button Styling */
+.image-close-btn {
+	display: none;
+	position: fixed;
+	top: 2rem;
+	left: 2rem;
+	width: 40px;
+	height: 40px;
+	background: rgba(0, 0, 0, 0.6);
+	color: #fff;
+	border-radius: 50%;
+	cursor: pointer;
+	z-index: 1001;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 40px;
+	transition: all 0.2s ease;
+	backdrop-filter: blur(5px);
+	user-select: none;
+}
+
+.image-close-btn:hover {
+	background: rgba(0, 0, 0, 0.8);
+	transform: scale(1.1);
+}
+
+.image-close-btn:focus {
+	outline: 2px solid #1493fb;
+	outline-offset: 2px;
+	background: rgba(0, 0, 0, 0.8);
+}
+
+.image-close-btn:active {
+	transform: scale(0.95);
+}
+
+/* Show close button only in overlay mode */
+.image-zoom-toggle:checked + .image-zoom-label .image-close-btn {
+	display: block;
+}
+
 
 .image-zoom-toggle:checked+.image-zoom-label+figcaption {
 	position: fixed;
@@ -402,34 +551,110 @@ header {
 	backdrop-filter: blur(5px);
 }
 
-/* Ensure zoomed images don't get cut off on mobile */
+/* Mobile responsive styles for overlay */
 @media (max-width: 768px) {
 	.image-zoom-toggle:checked+.image-zoom-label {
+		padding: 1rem;
+		flex-direction: column;
+	}
+
+	.image-zoom-toggle:checked+.image-zoom-label img {
+		max-width: 100vw;
+		max-height: 60vh;
+		margin-right: 0;
+		margin-bottom: 1rem;
+	}
+
+	.image-zoom-toggle:checked+.image-zoom-label .image-metadata {
+		position: static;
+		width: 100%;
+		max-height: 30vh;
+		background: rgba(20, 20, 20, 0.98);
 		padding: 1rem;
 	}
 
 	.image-zoom-toggle:checked+.image-zoom-label+figcaption {
-		font-size: 0.8rem;
-		padding: 0.75rem;
+		display: none; /* Hide figcaption on mobile when metadata sidebar is shown */
+	}
+
+	/* Mobile close button adjustments */
+	.image-close-btn {
+		width: 48px;
+		height: 48px;
+		line-height: 48px;
+		font-size: 20px;
+		top: 1rem;
+		left: 1rem;
 	}
 }
 
 .image-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 8px;
 	margin: 2rem 0;
+	max-width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
-/* Make figures inside grid more compact */
+/* Rectangular grid layout with 2:3 aspect ratio */
 .image-grid .image-figure {
 	margin: 0;
+	position: relative;
+	aspect-ratio: 2/3;
+	overflow: hidden;
+	border-radius: 8px;
 }
 
-/* For mobile devices, stack the images */
+
+/* Add metadata below images in grid */
+.image-grid .image-figure figcaption {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 0.5rem;
+	background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+	color: white;
+	font-size: 0.75rem;
+	text-align: left;
+	font-style: normal;
+	border-radius: 0 0 8px 8px;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.image-grid .image-figure:hover figcaption {
+	opacity: 1;
+}
+
+.image-grid .image-figure .photo-date {
+	display: block;
+	font-size: 0.7rem;
+	color: var(--text-color-secondary);
+	margin-top: 0.25rem;
+	opacity: 0.8;
+}
+
+/* Responsive breakpoints for grid */
+@media (max-width: 1200px) {
+	.image-grid {
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	}
+}
+
+@media (max-width: 900px) {
+	.image-grid {
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 3px;
+	}
+}
+
 @media (max-width: 600px) {
 	.image-grid {
-		grid-template-columns: 1fr;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 2px;
 	}
 }
 

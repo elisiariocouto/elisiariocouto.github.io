@@ -11,17 +11,44 @@ import pluginFilters from "./_config/filters.js";
 /** @param {import("@11ty/eleventy").UserConfig} eleventyConfig */
 export default async function (eleventyConfig) {
 
-	// Images with captions
-	eleventyConfig.addShortcode("image", function (src, caption, width, layout) {
+	// Images with captions and metadata
+	eleventyConfig.addShortcode("image", function (src, caption, width, layout, date, filename) {
 		const id = `img-${Math.random().toString(36).slice(2, 11)}`;
 		const style = width ? `style="max-width: ${width}px; margin: 0 auto;"` : '';
 		const layoutClass = layout ? `image-layout-${layout}` : '';
+
+		// Build caption with metadata
+		let captionContent = '';
+		if (layout === 'grid') {
+			// Grid mode: show filename and date
+			captionContent = filename || '';
+			if (date) {
+				const dateObj = new Date(date);
+				const formattedDate = eleventyConfig.getFilter('readableDate')(dateObj, 'dd LLL yyyy');
+				captionContent += `<span class="photo-date">${formattedDate}</span>`;
+			}
+		} else {
+			// Regular mode: use provided caption
+			captionContent = caption || '';
+		}
+
+		// Build metadata sidebar for overlay
+		let metadataSidebar = '';
+		if (layout === 'grid') {
+			// This will be populated from the template data in photos.njk
+			metadataSidebar = `<div class="image-metadata" id="meta-${id}">
+				<!-- Metadata content will be injected by template -->
+			</div>`;
+		}
+
 		return `<figure class="image-figure ${layoutClass}" ${style}>
 					<input type="checkbox" id="${id}" class="image-zoom-toggle">
 					<label for="${id}" class="image-zoom-label">
-					<img src="${src}" alt="${caption || ''}" loading="lazy">
+						<img src="${src}" alt="${caption || filename || 'Photo'}" loading="lazy">
+						${metadataSidebar}
+						<label for="${id}" class="image-close-btn" tabindex="0" aria-label="Close image overlay">✕</label>
 					</label>
-					${caption ? `<figcaption>${caption}</figcaption>` : ''}
+					${captionContent ? `<figcaption>${captionContent}</figcaption>` : ''}
 				</figure>`;
 	});
 
