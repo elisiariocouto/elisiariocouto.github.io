@@ -386,7 +386,16 @@ header {
 	font-style: italic;
 }
 
-/* Zoom functionality */
+/* Image container handling for grid and modal views */
+.grid-image {
+	display: block;
+}
+
+.modal-image {
+	display: none !important;
+}
+
+/* Zoom functionality - Desktop Layout */
 .image-zoom-toggle:checked+.image-zoom-label {
 	position: fixed;
 	top: 0;
@@ -397,18 +406,28 @@ header {
 	background: rgba(0, 0, 0, 0.9);
 	cursor: zoom-out;
 	display: flex;
+	padding: 0;
+}
+
+.image-zoom-toggle:checked+.image-zoom-label .grid-image {
+	display: none;
+}
+
+.image-zoom-toggle:checked+.image-zoom-label .modal-image {
+	display: flex !important;
+	flex: 1;
 	align-items: center;
 	justify-content: center;
 	padding: 2rem;
+	width: calc(100vw - 320px); /* Reserve space for sidebar */
 }
 
-.image-zoom-toggle:checked+.image-zoom-label img {
-	max-height: 90vh;
-	max-width: calc(100vw - 320px); /* Leave space for sidebar */
+.image-zoom-toggle:checked+.image-zoom-label .modal-image img {
+	max-height: calc(100vh - 4rem);
+	max-width: 100%;
 	width: auto;
 	height: auto;
 	object-fit: contain;
-	margin-right: 2rem;
 }
 
 /* Hide metadata sidebar in normal view */
@@ -416,19 +435,16 @@ header {
 	display: none;
 }
 
-/* Show and style metadata sidebar in overlay */
+/* Show and style metadata sidebar in overlay - Desktop */
 .image-zoom-toggle:checked+.image-zoom-label .image-metadata {
 	display: block;
-	position: fixed;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	width: 300px;
+	width: 320px;
 	background: rgba(20, 20, 20, 0.95);
 	color: #fff;
 	padding: 2rem;
 	overflow-y: auto;
 	backdrop-filter: blur(10px);
+	flex-shrink: 0;
 }
 
 .image-metadata h3 {
@@ -537,44 +553,49 @@ header {
 }
 
 
+/* Hide figcaption in modal view since metadata is shown in sidebar */
 .image-zoom-toggle:checked+.image-zoom-label+figcaption {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: rgba(0, 0, 0, 0.8);
-	color: #fff;
-	padding: 1rem;
-	text-align: center;
-	z-index: 1000;
-	margin: 0;
-	backdrop-filter: blur(5px);
+	display: none;
 }
 
 /* Mobile responsive styles for overlay */
 @media (max-width: 768px) {
 	.image-zoom-toggle:checked+.image-zoom-label {
-		padding: 1rem;
 		flex-direction: column;
+		padding: 0;
+		/* Ensure full viewport height usage, accounting for iOS safe areas */
+		height: 100vh;
+		height: 100dvh; /* Dynamic viewport height for modern browsers */
 	}
 
-	.image-zoom-toggle:checked+.image-zoom-label img {
-		max-width: 100vw;
-		max-height: 60vh;
-		margin-right: 0;
-		margin-bottom: 1rem;
+	.image-zoom-toggle:checked+.image-zoom-label .modal-image {
+		flex: 1;
+		width: 100vw;
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		/* Use available space above the bottom sidebar */
+		min-height: 0; /* Allow flexbox to shrink */
+	}
+
+	.image-zoom-toggle:checked+.image-zoom-label .modal-image img {
+		max-width: calc(100vw - 2rem);
+		max-height: 100%;
+		width: auto;
+		height: auto;
+		object-fit: contain;
 	}
 
 	.image-zoom-toggle:checked+.image-zoom-label .image-metadata {
-		position: static;
 		width: 100%;
-		max-height: 30vh;
+		max-height: 40vh; /* Limit to 40% of viewport height */
 		background: rgba(20, 20, 20, 0.98);
 		padding: 1rem;
-	}
-
-	.image-zoom-toggle:checked+.image-zoom-label+figcaption {
-		display: none; /* Hide figcaption on mobile when metadata sidebar is shown */
+		flex-shrink: 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		/* Ensure it sticks to bottom even with iOS safe areas */
+		padding-bottom: max(1rem, env(safe-area-inset-bottom));
 	}
 
 	/* Mobile close button adjustments */
@@ -583,8 +604,9 @@ header {
 		height: 48px;
 		line-height: 48px;
 		font-size: 20px;
-		top: 1rem;
+		top: max(1rem, env(safe-area-inset-top));
 		left: 1rem;
+		z-index: 1002; /* Above everything else */
 	}
 }
 

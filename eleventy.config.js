@@ -4,14 +4,15 @@ import pluginSyntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
 import pluginNavigation from "@11ty/eleventy-navigation";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import { EleventyRenderPlugin } from "@11ty/eleventy";
-
+import Image from "@11ty/eleventy-img";
+import path from "path";
 
 import pluginFilters from "./_config/filters.js";
 
 /** @param {import("@11ty/eleventy").UserConfig} eleventyConfig */
 export default async function (eleventyConfig) {
 
-	// Images with captions and metadata
+	// Original image shortcode for blog posts
 	eleventyConfig.addShortcode("image", function (src, caption, width, layout, date, filename) {
 		const id = `img-${Math.random().toString(36).slice(2, 11)}`;
 		const style = width ? `style="max-width: ${width}px; margin: 0 auto;"` : '';
@@ -32,24 +33,145 @@ export default async function (eleventyConfig) {
 			captionContent = caption || '';
 		}
 
-		// Build metadata sidebar for overlay
-		let metadataSidebar = '';
-		if (layout === 'grid') {
-			// This will be populated from the template data in photos.njk
-			metadataSidebar = `<div class="image-metadata" id="meta-${id}">
-				<!-- Metadata content will be injected by template -->
-			</div>`;
-		}
-
 		return `<figure class="image-figure ${layoutClass}" ${style}>
 					<input type="checkbox" id="${id}" class="image-zoom-toggle">
 					<label for="${id}" class="image-zoom-label">
 						<img src="${src}" alt="${caption || filename || 'Photo'}" loading="lazy">
-						${metadataSidebar}
 						<label for="${id}" class="image-close-btn" tabindex="0" aria-label="Close image overlay">✕</label>
 					</label>
 					${captionContent ? `<figcaption>${captionContent}</figcaption>` : ''}
 				</figure>`;
+	});
+
+	// Optimized images with eleventy-img for photo gallery
+	eleventyConfig.addAsyncShortcode("photoImage", async function (src, alt, photo = {}) {
+		const id = `img-${Math.random().toString(36).slice(2, 11)}`;
+		
+		// Convert relative path to absolute path from project root
+		const imagePath = src.startsWith('../') ? src.substring(3) : src;
+		
+		// Process image with eleventy-img
+		let metadata = await Image(imagePath, {
+			widths: [400, 800, 1200, 1920],
+			formats: ["avif", "webp", "jpeg"],
+			urlPath: "/img/",
+			outputDir: "./_site/img/",
+			filenameFormat: function (id, src, width, format, options) {
+				const extension = path.extname(src);
+				const name = path.basename(src, extension);
+				return `${name}-${width}w.${format}`;
+			}
+		});
+
+		// Get the image format data (prefer avif, fallback to webp, then jpeg)
+		const imageAttributes = {
+			alt,
+			loading: "lazy",
+			decoding: "async"
+		};
+
+		// Generate responsive image HTML for grid view (smaller sizes)
+		const gridImageHtml = Image.generateHTML(metadata, {
+			...imageAttributes,
+			sizes: "(max-width: 600px) 50vw, (max-width: 900px) 33vw, (max-width: 1200px) 25vw, 300px"
+		});
+
+		// Generate responsive image HTML for modal view (larger sizes)
+		const modalImageHtml = Image.generateHTML(metadata, {
+			...imageAttributes,
+			sizes: "(max-width: 768px) 100vw, (max-width: 1200px) calc(100vw - 320px), 1200px"
+		});
+
+		// Build caption content
+		let captionContent = '';
+		if (photo.alt) {
+			captionContent = photo.alt;
+			if (photo.date) {
+				const dateObj = new Date(photo.date);
+				const formattedDate = eleventyConfig.getFilter('readableDate')(dateObj, 'dd LLL yyyy');
+				captionContent += `<span class="photo-date">${formattedDate}</span>`;
+			}
+		}
+
+		// Build metadata sidebar for overlay
+		let metadataSidebar = '';
+		if (photo) {
+			metadataSidebar = `
+				<div class="image-metadata" id="meta-${id}">
+					<h3>Photo Details</h3>
+					${photo.alt ? `
+					<div class="meta-item">
+						<img src="../public/icons/file.svg" class="meta-icon" alt="">
+						<div class="meta-content">
+							<label>Filename</label>
+							<span>${photo.alt}</span>
+						</div>
+					</div>` : ''}
+					${photo.date ? `
+					<div class="meta-item">
+						<img src="../public/icons/calendar.svg" class="meta-icon" alt="">
+						<div class="meta-content">
+							<label>Date</label>
+							<span>${eleventyConfig.getFilter('readableDate')(new Date(photo.date), 'dd LLLL yyyy')}</span>
+						</div>
+					</div>` : ''}
+					${photo.camera ? `
+					<div class="meta-item">
+						<img src="../public/icons/camera.svg" class="meta-icon" alt="">
+						<div class="meta-content">
+							<label>Camera</label>
+							<span>${photo.camera}</span>
+						</div>
+					</div>` : ''}
+					${photo.locationName ? `
+					<div class="meta-item">
+						<img src="../public/icons/location.svg" class="meta-icon" alt="">
+						<div class="meta-content">
+							<label>Location</label>
+							<span>${photo.locationName}</span>
+						</div>
+					</div>` : ''}
+					${photo.dimensions ? `
+					<div class="meta-item">
+						<img src="../public/icons/image.svg" class="meta-icon" alt="">
+						<div class="meta-content">
+							<label>Dimensions</label>
+							<span>${photo.dimensions}</span>
+						</div>
+					</div>` : ''}
+					${photo.techDetails ? `
+					<div class="meta-item">
+						<img src="../public/icons/settings.svg" class="meta-icon" alt="">
+						<div class="meta-content">
+							<label>Camera Settings</label>
+							<span class="tech-details">
+								${photo.techDetails.iso ? `ISO ${photo.techDetails.iso}` : ''}
+								${photo.techDetails.aperture ? `${photo.techDetails.iso ? ' • ' : ''}${photo.techDetails.aperture}` : ''}
+								${photo.techDetails.focalLength ? `${(photo.techDetails.iso || photo.techDetails.aperture) ? ' • ' : ''}${photo.techDetails.focalLength}` : ''}
+								${photo.techDetails.exposureTime ? `${(photo.techDetails.iso || photo.techDetails.aperture || photo.techDetails.focalLength) ? ' • ' : ''}${photo.techDetails.exposureTime}` : ''}
+							</span>
+						</div>
+					</div>` : ''}
+					${photo.description ? `
+					<div class="meta-item">
+						<div class="meta-content">
+							<label>Description</label>
+							<span>${photo.description}</span>
+						</div>
+					</div>` : ''}
+				</div>`;
+		}
+
+		return `<figure class="image-figure image-layout-grid">
+			<input type="checkbox" id="${id}" class="image-zoom-toggle">
+			<label for="${id}" class="image-zoom-label">
+				<div class="grid-image">${gridImageHtml}</div>
+				<div class="modal-image" style="display: none;">${modalImageHtml}</div>
+				${metadataSidebar}
+				<label for="${id}" class="image-close-btn" tabindex="0" aria-label="Close image overlay">✕</label>
+			</label>
+			${captionContent ? `<figcaption>${captionContent}</figcaption>` : ''}
+		</figure>`;
 	});
 
 	// Add a container shortcode for side-by-side images
