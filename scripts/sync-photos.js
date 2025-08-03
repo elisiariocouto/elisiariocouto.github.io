@@ -173,7 +173,7 @@ class ImmichPhotoSync {
       try {
         const photoId = photo.id;
         const originalFilename = photo.originalFileName || `photo-${photoId}`;
-        const fileExtension = path.extname(originalFilename) || '.jpg';
+        const fileExtension = (path.extname(originalFilename) || '.jpg').toLowerCase();
         const localFilename = `${photoId}${fileExtension}`;
         const localPath = path.join(this.photosDir, localFilename);
         const webPath = `../public/img/photos/${localFilename}`;
