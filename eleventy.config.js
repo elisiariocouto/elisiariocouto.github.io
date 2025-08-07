@@ -84,8 +84,10 @@ export default async function (eleventyConfig) {
 
 		// Build caption content
 		let captionContent = '';
-		if (photo.alt) {
-			captionContent = photo.alt;
+		if (photo.locationName || photo.date) {
+			if (photo.locationName) {
+				captionContent = photo.locationName;
+			}
 			if (photo.date) {
 				const dateObj = new Date(photo.date);
 				const formattedDate = eleventyConfig.getFilter('readableDate')(dateObj, 'dd LLL yyyy');
