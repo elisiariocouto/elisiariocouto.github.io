@@ -3,8 +3,12 @@
 import { promises as fs, createWriteStream } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execFile as execFileCb } from 'child_process';
+import { promisify } from 'util';
 import https from 'https';
 import http from 'http';
+
+const execFile = promisify(execFileCb);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,6 +33,8 @@ async function loadEnv() {
     return {};
   }
 }
+
+const NEEDS_CONVERSION = new Set(['.heic', '.arw']);
 
 class ImmichPhotoSync {
   constructor(host, apiKey) {
@@ -129,6 +135,10 @@ class ImmichPhotoSync {
     await fs.mkdir(path.dirname(this.dataFile), { recursive: true });
   }
 
+  async convertToJpeg(inputPath, outputPath) {
+    await execFile('sips', ['-s', 'format', 'jpeg', inputPath, '--out', outputPath]);
+  }
+
   async getFavoritePhotos() {
     this.log('Fetching favorite photos from Immich...');
 
@@ -174,20 +184,40 @@ class ImmichPhotoSync {
         const photoId = photo.id;
         const originalFilename = photo.originalFileName || `photo-${photoId}`;
         const fileExtension = (path.extname(originalFilename) || '.jpg').toLowerCase();
-        const localFilename = `${photoId}${fileExtension}`;
+        const needsConversion = NEEDS_CONVERSION.has(fileExtension);
+        const finalExtension = needsConversion ? '.jpg' : fileExtension;
+        const localFilename = `${photoId}${finalExtension}`;
         const localPath = path.join(this.photosDir, localFilename);
         const webPath = `../public/img/photos/${localFilename}`;
 
         // Check if we need to download this photo
         const photoModified = photo.fileModifiedAt || photo.fileCreatedAt;
-        const needsDownload = !cache[photoId] ||
+        const cachedHasOldExt = cache[photoId] && cache[photoId].localFilename !== localFilename;
+        const needsDownload = !cache[photoId] || cachedHasOldExt ||
           cache[photoId].modifiedAt !== photoModified ||
           !(await fs.access(localPath).then(() => true).catch(() => false));
 
         if (needsDownload) {
           this.log(`Downloading ${originalFilename}...`);
           const downloadUrl = `${this.host}/api/assets/${photoId}/original`;
-          await this.downloadFile(downloadUrl, localPath);
+
+          const downloadPath = needsConversion
+            ? path.join(this.photosDir, `${photoId}${fileExtension}`)
+            : localPath;
+
+          await this.downloadFile(downloadUrl, downloadPath);
+
+          if (needsConversion) {
+            this.log(`Converting ${originalFilename} to JPEG...`);
+            await this.convertToJpeg(downloadPath, localPath);
+            await fs.unlink(downloadPath);
+          }
+
+          // Clean up old cached file if extension changed
+          if (cachedHasOldExt) {
+            const oldPath = path.join(this.photosDir, cache[photoId].localFilename);
+            await fs.unlink(oldPath).catch(() => {});
+          }
 
           // Update cache
           cache[photoId] = {
