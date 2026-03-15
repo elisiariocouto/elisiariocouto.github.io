@@ -73,7 +73,7 @@ export default async function (eleventyConfig) {
 		// Generate responsive image HTML for grid view (smaller sizes)
 		const gridImageHtml = Image.generateHTML(metadata, {
 			...imageAttributes,
-			sizes: "(max-width: 600px) 50vw, (max-width: 900px) 33vw, (max-width: 1200px) 25vw, 300px"
+			sizes: "(max-width: 600px) 50vw, (max-width: 900px) 33vw, 25vw"
 		});
 
 		// Generate responsive image HTML for modal view (larger sizes)
@@ -86,7 +86,7 @@ export default async function (eleventyConfig) {
 		let captionContent = '';
 		if (photo.locationName || photo.date) {
 			if (photo.locationName) {
-				captionContent = photo.locationName;
+				captionContent = `<span class="photo-location">${photo.locationName}</span>`;
 			}
 			if (photo.date) {
 				const dateObj = new Date(photo.date);
@@ -178,7 +178,7 @@ export default async function (eleventyConfig) {
 
 	// Add a container shortcode for side-by-side images
 	eleventyConfig.addPairedShortcode("imagegrid", function (content) {
-		return `<div class="image-grid">${content}</div>`;
+		return `<div class="image-grid-breakout"><div class="image-grid">${content}</div></div>`;
 	});
 
 	// Drafts, see also _data/eleventyDataSchema.js

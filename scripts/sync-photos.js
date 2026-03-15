@@ -248,7 +248,7 @@ class ImmichPhotoSync {
 
         const photoData = {
           src: webPath,
-          alt: exifInfo?.description || sourcePhoto.originalFileName || 'Photo',
+          alt: exifInfo?.description || null,
           date: sourcePhoto.fileCreatedAt || sourcePhoto.createdAt,
         };
 
@@ -273,6 +273,13 @@ class ImmichPhotoSync {
           if (locationParts.length > 0) {
             photoData.locationName = locationParts.join(', ');
           }
+        }
+
+        // Add meaningful alt text fallback using location
+        if (!photoData.alt) {
+          photoData.alt = photoData.locationName
+            ? `Photo taken in ${photoData.locationName}`
+            : 'Photo';
         }
 
         // Add camera info

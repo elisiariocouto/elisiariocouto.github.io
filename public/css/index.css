@@ -62,6 +62,8 @@ html {
 
 body {
 	max-width: 40em;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 /* https://www.a11yproject.com/posts/how-to-hide-content/ */
@@ -360,18 +362,9 @@ header {
 
 .image-figure img {
 	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	object-position: center;
-	border-radius: 8px;
-}
-
-.image-grid .image-figure img {
+	height: auto;
 	display: block;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	object-position: center center;
+	border-radius: 8px;
 }
 
 .image-figure figcaption {
@@ -610,23 +603,32 @@ header {
 	}
 }
 
-.image-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 8px;
-	margin: 2rem 0;
-	max-width: 1200px;
-	margin-left: auto;
-	margin-right: auto;
+.image-grid-breakout {
+	width: 100vw;
+	margin-left: calc(50% - 50vw);
+	padding: 0 1rem;
 }
 
-/* Rectangular grid layout with 2:3 aspect ratio */
+.image-grid {
+	column-count: 4;
+	column-gap: 8px;
+	max-width: 1400px;
+	margin: 2rem auto;
+	padding: 0 1rem;
+}
+
 .image-grid .image-figure {
-	margin: 0;
+	display: inline-block;
+	width: 100%;
+	margin: 0 0 8px 0;
 	position: relative;
-	aspect-ratio: 2/3;
-	overflow: hidden;
+	break-inside: avoid;
 	border-radius: 8px;
+	overflow: hidden;
+}
+
+.image-grid .image-figure .grid-image {
+	line-height: 0;
 }
 
 
@@ -636,42 +638,57 @@ header {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	padding: 0.5rem;
-	background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+	padding: 2rem 0.75rem 0.625rem;
+	background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.8) 100%);
 	color: white;
 	font-size: 0.75rem;
 	text-align: left;
 	font-style: normal;
 	border-radius: 0 0 8px 8px;
-	opacity: 1;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.image-grid .image-figure .photo-location {
+	display: block;
+	font-weight: 500;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .image-grid .image-figure .photo-date {
 	display: block;
 	font-size: 0.7rem;
-	color: var(--text-color-secondary);
+	color: rgba(255, 255, 255, 0.75);
 	margin-top: 0.25rem;
-	opacity: 0.8;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 /* Responsive breakpoints for grid */
 @media (max-width: 1200px) {
 	.image-grid {
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		column-count: 3;
+		column-gap: 8px;
 	}
 }
 
 @media (max-width: 900px) {
 	.image-grid {
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: 3px;
+		column-count: 2;
+		column-gap: 4px;
+	}
+
+	.image-grid .image-figure {
+		margin-bottom: 4px;
 	}
 }
 
 @media (max-width: 600px) {
 	.image-grid {
-		grid-template-columns: repeat(2, 1fr);
-		gap: 2px;
+		column-count: 2;
+		column-gap: 2px;
+	}
+
+	.image-grid .image-figure {
+		margin-bottom: 2px;
 	}
 }
 
