@@ -6,6 +6,8 @@ eleventyNavigation:
   order: 3
 ---
 
+{% css %}{% include "public/js/vendor/photoswipe.css" %}{% endcss %}
+
 <h1>Photo Gallery</h1>
 
 {% imagegrid %}
@@ -13,3 +15,7 @@ eleventyNavigation:
     {% photoImage photo.src, photo.alt, photo %}
   {% endfor %}
 {% endimagegrid %}
+
+<script src="/js/vendor/masonry.pkgd.min.js"></script>
+<script src="/js/vendor/imagesloaded.pkgd.min.js"></script>
+<script type="module" src="/js/gallery.js"></script>

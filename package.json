@@ -47,6 +47,9 @@
 		"zod-validation-error": "^3.3.1"
 	},
 	"dependencies": {
-		"@zachleat/heading-anchors": "^1.0.1"
+		"@zachleat/heading-anchors": "^1.0.1",
+		"imagesloaded": "^5.0.0",
+		"masonry-layout": "^4.2.2",
+		"photoswipe": "^5.4.4"
 	}
 }

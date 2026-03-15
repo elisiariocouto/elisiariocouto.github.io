@@ -14,14 +14,12 @@ export default async function (eleventyConfig) {
 
 	// Original image shortcode for blog posts
 	eleventyConfig.addShortcode("image", function (src, caption, width, layout, date, filename) {
-		const id = `img-${Math.random().toString(36).slice(2, 11)}`;
 		const style = width ? `style="max-width: ${width}px; margin: 0 auto;"` : '';
 		const layoutClass = layout ? `image-layout-${layout}` : '';
 
 		// Build caption with metadata
 		let captionContent = '';
 		if (layout === 'grid') {
-			// Grid mode: show filename and date
 			captionContent = filename || '';
 			if (date) {
 				const dateObj = new Date(date);
@@ -29,27 +27,20 @@ export default async function (eleventyConfig) {
 				captionContent += `<span class="photo-date">${formattedDate}</span>`;
 			}
 		} else {
-			// Regular mode: use provided caption
 			captionContent = caption || '';
 		}
 
 		return `<figure class="image-figure ${layoutClass}" ${style}>
-					<input type="checkbox" id="${id}" class="image-zoom-toggle">
-					<label for="${id}" class="image-zoom-label">
-						<img src="${src}" alt="${caption || filename || 'Photo'}" loading="lazy">
-						<label for="${id}" class="image-close-btn" tabindex="0" aria-label="Close image overlay">✕</label>
-					</label>
+					<img src="${src}" alt="${caption || filename || 'Photo'}" loading="lazy">
 					${captionContent ? `<figcaption>${captionContent}</figcaption>` : ''}
 				</figure>`;
 	});
 
 	// Optimized images with eleventy-img for photo gallery
 	eleventyConfig.addAsyncShortcode("photoImage", async function (src, alt, photo = {}) {
-		const id = `img-${Math.random().toString(36).slice(2, 11)}`;
-		
 		// Convert relative path to absolute path from project root
 		const imagePath = src.startsWith('../') ? src.substring(3) : src;
-		
+
 		// Process image with eleventy-img
 		let metadata = await Image(imagePath, {
 			widths: [400, 800, 1200, 1920],
@@ -63,24 +54,16 @@ export default async function (eleventyConfig) {
 			}
 		});
 
-		// Get the image format data (prefer avif, fallback to webp, then jpeg)
-		const imageAttributes = {
+		// Generate responsive image HTML for grid view
+		const gridImageHtml = Image.generateHTML(metadata, {
 			alt,
 			loading: "lazy",
-			decoding: "async"
-		};
-
-		// Generate responsive image HTML for grid view (smaller sizes)
-		const gridImageHtml = Image.generateHTML(metadata, {
-			...imageAttributes,
+			decoding: "async",
 			sizes: "(max-width: 600px) 50vw, (max-width: 900px) 33vw, 25vw"
 		});
 
-		// Generate responsive image HTML for modal view (larger sizes)
-		const modalImageHtml = Image.generateHTML(metadata, {
-			...imageAttributes,
-			sizes: "(max-width: 768px) 100vw, (max-width: 1200px) calc(100vw - 320px), 1200px"
-		});
+		// Get the largest JPEG for PhotoSwipe full-size view
+		const fullImage = metadata.jpeg[metadata.jpeg.length - 1];
 
 		// Build caption content
 		let captionContent = '';
@@ -95,83 +78,29 @@ export default async function (eleventyConfig) {
 			}
 		}
 
-		// Build metadata sidebar for overlay
-		let metadataSidebar = '';
-		if (photo) {
-			metadataSidebar = `
-				<div class="image-metadata" id="meta-${id}">
-					<h3>Photo Details</h3>
-					${photo.alt ? `
-					<div class="meta-item">
-						<img src="../public/icons/file.svg" class="meta-icon" alt="">
-						<div class="meta-content">
-							<label>Filename</label>
-							<span>${photo.alt}</span>
-						</div>
-					</div>` : ''}
-					${photo.date ? `
-					<div class="meta-item">
-						<img src="../public/icons/calendar.svg" class="meta-icon" alt="">
-						<div class="meta-content">
-							<label>Date</label>
-							<span>${eleventyConfig.getFilter('readableDate')(new Date(photo.date), 'dd LLLL yyyy')}</span>
-						</div>
-					</div>` : ''}
-					${photo.camera ? `
-					<div class="meta-item">
-						<img src="../public/icons/camera.svg" class="meta-icon" alt="">
-						<div class="meta-content">
-							<label>Camera</label>
-							<span>${photo.camera}</span>
-						</div>
-					</div>` : ''}
-					${photo.locationName ? `
-					<div class="meta-item">
-						<img src="../public/icons/location.svg" class="meta-icon" alt="">
-						<div class="meta-content">
-							<label>Location</label>
-							<span>${photo.locationName}</span>
-						</div>
-					</div>` : ''}
-					${photo.dimensions ? `
-					<div class="meta-item">
-						<img src="../public/icons/image.svg" class="meta-icon" alt="">
-						<div class="meta-content">
-							<label>Dimensions</label>
-							<span>${photo.dimensions}</span>
-						</div>
-					</div>` : ''}
-					${photo.techDetails ? `
-					<div class="meta-item">
-						<img src="../public/icons/settings.svg" class="meta-icon" alt="">
-						<div class="meta-content">
-							<label>Camera Settings</label>
-							<span class="tech-details">
-								${photo.techDetails.iso ? `ISO ${photo.techDetails.iso}` : ''}
-								${photo.techDetails.aperture ? `${photo.techDetails.iso ? ' • ' : ''}${photo.techDetails.aperture}` : ''}
-								${photo.techDetails.focalLength ? `${(photo.techDetails.iso || photo.techDetails.aperture) ? ' • ' : ''}${photo.techDetails.focalLength}` : ''}
-								${photo.techDetails.exposureTime ? `${(photo.techDetails.iso || photo.techDetails.aperture || photo.techDetails.focalLength) ? ' • ' : ''}${photo.techDetails.exposureTime}` : ''}
-							</span>
-						</div>
-					</div>` : ''}
-					${photo.description ? `
-					<div class="meta-item">
-						<div class="meta-content">
-							<label>Description</label>
-							<span>${photo.description}</span>
-						</div>
-					</div>` : ''}
-				</div>`;
-		}
+		// Build data attributes for PhotoSwipe metadata panel
+		const dataAttrs = [
+			`data-pswp-src="${fullImage.url}"`,
+			`data-pswp-width="${fullImage.width}"`,
+			`data-pswp-height="${fullImage.height}"`,
+			photo.alt ? `data-meta-filename="${photo.alt}"` : '',
+			photo.date ? `data-meta-date="${eleventyConfig.getFilter('readableDate')(new Date(photo.date), 'dd LLLL yyyy')}"` : '',
+			photo.camera ? `data-meta-camera="${photo.camera}"` : '',
+			photo.locationName ? `data-meta-location="${photo.locationName}"` : '',
+			photo.dimensions ? `data-meta-dimensions="${photo.dimensions}"` : '',
+			photo.techDetails ? `data-meta-tech="${[
+				photo.techDetails.iso ? `ISO ${photo.techDetails.iso}` : '',
+				photo.techDetails.aperture || '',
+				photo.techDetails.focalLength || '',
+				photo.techDetails.exposureTime || ''
+			].filter(Boolean).join(' · ')}"` : '',
+			photo.description ? `data-meta-description="${photo.description}"` : '',
+		].filter(Boolean).join(' ');
 
 		return `<figure class="image-figure image-layout-grid">
-			<input type="checkbox" id="${id}" class="image-zoom-toggle">
-			<label for="${id}" class="image-zoom-label">
-				<div class="grid-image">${gridImageHtml}</div>
-				<div class="modal-image" style="display: none;">${modalImageHtml}</div>
-				${metadataSidebar}
-				<label for="${id}" class="image-close-btn" tabindex="0" aria-label="Close image overlay">✕</label>
-			</label>
+			<a href="${fullImage.url}" ${dataAttrs} target="_blank">
+				${gridImageHtml}
+			</a>
 			${captionContent ? `<figcaption>${captionContent}</figcaption>` : ''}
 		</figure>`;
 	});
